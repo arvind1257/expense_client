@@ -1,0 +1,112 @@
+#move {
+    position: relative;
+    left: -60px;
+    top: 5px;
+    width: 50px;
+    height: 50px;
+    animation: load 1.5s linear 0s infinite;
+}
+
+@keyframes load {
+    0% {
+        left: -60px;
+        opacity: 1;
+    }
+
+    100% {
+        left: 140px;
+        opacity: 0.5;
+    }
+
+
+}
+
+#move1 {
+    position: relative;
+    left: -110px;
+    top: 5px;
+    width: 50px;
+    height: 50px;
+    animation: load1 1.5s linear 0.5s infinite;
+}
+
+@keyframes load1 {
+    0% {
+        left: -110px;
+        opacity: 1;
+    }
+
+    100% {
+        left: 90px;
+        opacity: 0.5;
+    }
+}
+
+#move2 {
+    position: relative;
+    left: 40px;
+    top: 5px;
+    width: 50px;
+    height: 50px;
+    animation: load2 1.5s linear 1s infinite;
+}
+
+@keyframes load2 {
+    0% {
+        left: -160px;
+        opacity: 1;
+    }
+
+    100% {
+        left: 40px;
+        opacity: 0.5;
+    }
+}
+
+.animation2 {
+    color: #ffda1b;
+    border-radius: 20px;
+    z-index: 4;
+    /* position: absolute;
+    top: 35%;
+    left: 40%; */
+    width: fit-content;
+    margin: auto;
+    background-color: light;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* @media (max-width:800px) {
+    .animation2{
+        left:20%;   
+    }
+} */
+
+.animation3 {
+    font-size: 50px;
+    width: 100%;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+#img1 {
+    position: relative;
+    left: -10px;
+    top: 5px;
+    width: 50px;
+    height: 50px;
+}
+
+#img2 {
+    width: 40px;
+    height: 40px;
+}
+
+.loadingMainPage {
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.3);
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+}

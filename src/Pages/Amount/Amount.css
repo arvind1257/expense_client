@@ -1,0 +1,131 @@
+
+.add{
+    z-index:10;
+    bottom:6%;
+    right:3%;
+    position: fixed;
+    width:60px;
+    height:60px;
+    
+  }
+  .add1{
+    z-index:9;
+    bottom:10%;
+    right:4%;
+    position: fixed;
+    width:30px;
+    height:30px;
+    
+  }
+  .add2{
+    z-index:8;
+    bottom:10%;
+    right:4%;
+    position: fixed;
+    width:30px;
+    height:30px;
+    
+  }
+  .add button{
+    width:60px;
+    height:60px;
+    color: white;
+    font-size: 33px;
+    cursor: pointer;
+    font-weight: bolder;
+    background-color:#1f5e99;
+    border-radius: 30px;
+  }
+  .add1 button{
+    width:30px;
+    height:30px;
+    color:white;
+    font-size: 19px;
+    cursor: pointer;
+    font-weight: bolder;
+    background-color:red;
+    border-radius: 30px;
+  }
+  .add2 button{
+    width:30px;
+    height:30px;
+    color:white;
+    font-size: 19px;
+    cursor: pointer;
+    font-weight: bolder;
+    background-color:green;
+    border-radius: 30px;
+  }
+  .ani1{
+    animation: animName 0.3s linear 1;
+  }
+  
+  .ani21{
+    animation: animName1 0.3s linear 1;
+    bottom:19%;
+  }
+  .ani22{
+    animation: animName2 0.3s linear 1;
+    bottom: 10%;
+  }
+  .ani31{
+    animation: animName4 0.3s linear 1;
+    bottom:26%;
+  }
+  .ani32{
+    animation: animName5 0.3s linear 1;
+    bottom: 10%;
+  }
+  
+  @keyframes animName {
+   0%{
+      transform: rotate(0deg);
+     }
+  100%{
+      transform: rotate(180deg);
+     }
+  }
+  
+  
+  @keyframes animName1 {
+    0%{
+       transform: rotate(0deg);
+       bottom: 10%;
+      }
+   100%{
+       transform: rotate(180deg);
+       bottom: 19%;
+      }
+   }
+   
+  @keyframes animName2 {
+    0%{
+       transform: rotate(0deg);
+       bottom: 19%;
+      }
+   100%{
+       transform: rotate(180deg);
+       bottom: 10%;
+      }
+   }
+   @keyframes animName4 {
+    0%{
+       transform: rotate(0deg);
+       bottom: 10%;
+      }
+   100%{
+       transform: rotate(180deg);
+       bottom: 26%;
+      }
+   }
+   
+  @keyframes animName5 {
+    0%{
+       transform: rotate(0deg);
+       bottom: 26%;
+      }
+   100%{
+       transform: rotate(180deg);
+       bottom: 10%;
+      }
+   }
