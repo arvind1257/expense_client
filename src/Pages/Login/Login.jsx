@@ -3,12 +3,16 @@ import { Link, useNavigate, useLocation } from "react-router-dom"
 import React, { useState } from "react"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./Login.css"
+import { API } from "../../App"
+import { useDispatch } from "react-redux"
+import { logIn } from "../../Action/User"
 
 const Login = ({ loading, onLoading }) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const location = useLocation()
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     var mess = {}
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -17,30 +21,9 @@ const Login = ({ loading, onLoading }) => {
         }
         else {
             onLoading(true);
-            await fetch('http://localhost:5000/user/login', {
-                method:"POST",
-                body: JSON.stringify({
-                    email:email,
-                    password:password,
-                }),
-                headers: {
-                    'Content-type': 'application/json; charset=UTF-8',
-                },
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    localStorage.setItem("profile",data);
-                    console.log(data);
-                    onLoading(false);
-                    navigate("/Home")
-
-                })
-                .catch((err) => {
-                    console.log(err.message);
-                }); 
+            dispatch(logIn({email,password},navigate,onLoading))
         };
     }
-
 
 
 return (

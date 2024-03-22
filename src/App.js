@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./Components/Header/Header";
 import Navbar from "./Components/Navbar/Navbar";
 import './App.css';
@@ -10,6 +10,8 @@ import Note from './Pages/Note/Note';
 import Settings from './Pages/Settings/Settings';
 import Amount from "./Pages/Amount/Amount";
 import Login from "./Pages/Login/Login";
+
+
 
 function App() {
   const [loading, setLoading] = useState(false);

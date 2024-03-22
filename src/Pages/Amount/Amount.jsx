@@ -1,6 +1,8 @@
 import React from 'react'
+import { useLocation } from 'react-router-dom';
 import "./Amount.css"
 const Amount = () => {
+  const location = useLocation();
   const [ani,setAni]  = React.useState(true);
     const delay = async (ms) => {
         return new Promise((resolve) => 
@@ -29,6 +31,7 @@ const Amount = () => {
     }
     
   return (
+    location.pathname!=="/" &&
     <>
     <div id="test" className='add'>
       <button  className='abtn' onClick={()=>{

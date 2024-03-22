@@ -1,0 +1,57 @@
+.home-container{
+        padding-top:20px;
+}
+.home-container-1{
+    padding: 0px;
+    padding-bottom: 30px;
+    margin: 0px;
+    justify-content:center ;
+}
+.home-container-2{
+
+    padding-bottom: 30px;
+}
+.home-container-3{
+
+    padding-bottom: 30px;
+}
+.home-tab-1{
+    font-size: 20px;
+    color:	#0784b5;
+    padding:0px;
+}
+.home-tab-1 .title{
+    text-shadow: 2px 0px 1px #0784b5;
+    color:	#39ace7;
+    font-size: 30px;
+    font-weight: bolder;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+    text-align: left !important;
+    border: 1px solid #e5e7eb !important;
+    border-width: 0 0 1px 0 !important;
+    padding: 0.5rem 0.5rem  !important;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+    text-align: left;
+    padding: 0.5rem 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-width: 0 0 1px 0;
+    font-weight: 700;
+    color: #374151;
+    background: #f9fafb;
+    transition: box-shadow 0.2s;
+}
+.p-paginator .p-paginator-pages .p-paginator-page,
+.p-paginator .p-paginator-first, .p-paginator .p-paginator-prev, .p-paginator .p-paginator-next, .p-paginator .p-paginator-last {
+    min-width: 2rem;
+}
+
+@media (max-width:500px){
+    .p-paginator .p-paginator-pages .p-paginator-page,
+.p-paginator .p-paginator-first, .p-paginator .p-paginator-prev, .p-paginator .p-paginator-next, .p-paginator .p-paginator-last {
+    min-width: 1.2rem;
+}
+}
