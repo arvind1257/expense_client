@@ -1,7 +1,7 @@
 import axios from "axios"
 const token = localStorage.getItem("token");
-//const API = axios.create({baseURL: 'https://schoolportalbackend.onrender.com'});
-const API = axios.create({baseURL: 'http://localhost:5000'});
+const API = axios.create({baseURL: 'https://aware-gray-caridea.cyclic.app'});
+//const API = axios.create({baseURL: 'http://localhost:5000'});
 if (token) {
   console.log(token)
   API.defaults.headers.common['authorization'] = `Bearer ${token}`;
