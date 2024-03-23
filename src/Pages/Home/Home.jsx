@@ -153,7 +153,8 @@ const Home = ({loading,onLoading}) => {
       setFilter(data);
       onLoading(false);
     }
-  }, [data])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data,dispatch])
   useEffect(() => {
     if (filter.length!==0) {
       let temp = [];
@@ -179,7 +180,7 @@ const Home = ({loading,onLoading}) => {
     if (!User) {
       dispatch(getUserDetails({userId:localStorage.getItem("id")},navigate));
     }
-  }, [User])
+  }, [User,dispatch,navigate])
 
   console.log(data);
 

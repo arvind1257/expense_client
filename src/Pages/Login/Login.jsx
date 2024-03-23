@@ -1,16 +1,14 @@
-import { Link, useNavigate, useLocation } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 import React, { useState } from "react"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./Login.css"
-import { API } from "../../App"
 import { useDispatch } from "react-redux"
 import { logIn } from "../../Action/User"
 
 const Login = ({ loading, onLoading }) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const location = useLocation()
     const navigate = useNavigate()
     const dispatch = useDispatch()
     var mess = {}

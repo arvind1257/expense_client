@@ -13,18 +13,19 @@ const Admin = () => {
         openList[i].parentElement.classList.toggle("showMenu");
     }
 
-    function subMenu(target1) {
-        let subList = document.querySelectorAll(".iocn-link");
-        let openList = document.querySelectorAll(".active");
-        for (var i = 0; i < openList.length; i++) {
-            if (openList[i] !== subList[target1]) {
-                openList[i].classList.toggle("active");
-                openList[i].parentElement.classList.toggle("showMenu");
-            }
-        }
-        subList[target1].classList.toggle("active")
-        subList[target1].parentElement.classList.toggle("showMenu");
-    }
+    // function subMenu(target1) {
+    //     let subList = document.querySelectorAll(".iocn-link");
+    //     let openList = document.querySelectorAll(".active");
+    //     for (var i = 0; i < openList.length; i++) {
+    //         if (openList[i] !== subList[target1]) {
+    //             openList[i].classList.toggle("active");
+    //             openList[i].parentElement.classList.toggle("showMenu");
+    //         }
+    //     }
+    //     subList[target1].classList.toggle("active")
+    //     subList[target1].parentElement.classList.toggle("showMenu");
+    // }
+    
     return (
         location.pathname!=="/" &&
         <div className="sidebar">
