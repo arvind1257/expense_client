@@ -13,18 +13,18 @@ const Admin = () => {
         openList[i].parentElement.classList.toggle("showMenu");
     }
 
-    // function subMenu(target1) {
-    //     let subList = document.querySelectorAll(".iocn-link");
-    //     let openList = document.querySelectorAll(".active");
-    //     for (var i = 0; i < openList.length; i++) {
-    //         if (openList[i] !== subList[target1]) {
-    //             openList[i].classList.toggle("active");
-    //             openList[i].parentElement.classList.toggle("showMenu");
-    //         }
-    //     }
-    //     subList[target1].classList.toggle("active")
-    //     subList[target1].parentElement.classList.toggle("showMenu");
-    // }
+    function subMenu(target1) {
+        let subList = document.querySelectorAll(".iocn-link");
+        let openList = document.querySelectorAll(".active");
+        for (var i = 0; i < openList.length; i++) {
+            if (openList[i] !== subList[target1]) {
+                openList[i].classList.toggle("active");
+                openList[i].parentElement.classList.toggle("showMenu");
+            }
+        }
+        subList[target1].classList.toggle("active")
+        subList[target1].parentElement.classList.toggle("showMenu");
+    }
     
     return (
         location.pathname!=="/" &&
@@ -41,6 +41,20 @@ const Admin = () => {
                     </Link>
                     <ul className="sub-menu blank">
                         <li><Link to='/Home' className="link_name">Dashboard</Link></li>
+                    </ul>
+                </li>
+                <li>
+                    <div class="iocn-link" onClick={() => subMenu(0)}>
+                        <span>
+                            <i class='bx bx-plus'></i>
+                            <span class="link_name">Amount</span>
+                        </span>
+                        <i class='bx bxs-chevron-down arrow'></i>
+                    </div>
+                    <ul class="sub-menu">
+                        <li><Link class="link_name">Amount</Link></li>
+                        <li><Link to='/addexpense'>Add Expense</Link></li>
+                        <li><Link to='/exchange'>Exchange</Link></li>
                     </ul>
                 </li>
                 <li>

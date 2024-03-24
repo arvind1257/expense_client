@@ -30,6 +30,8 @@ function App() {
       <Routes>
         <Route path='/' element={<Login loading={loading} onLoading={(status) => onLoading(status)} />}></Route>
         <Route path='/Home' element={<Home loading={loading} onLoading={(status) => onLoading(status)} />}></Route>
+        <Route path='/addexpense' element={<Home loading={loading} onLoading={(status) => onLoading(status)} />}></Route>
+        <Route path='/exchange' element={<Home loading={loading} onLoading={(status) => onLoading(status)} />}></Route>
         <Route path='/Report' element={<Report loading={loading} onLoading={(status) => onLoading(status)} />}></Route>
         <Route path='/Note' element={<Note loading={loading} onLoading={(status) => onLoading(status)} />}></Route>
         <Route path='/Settings' element={<Settings loading={loading} onLoading={(status) => onLoading(status)} />}></Route>

@@ -16750,9 +16750,6 @@ textarea.rs-picker-menu .rs-picker-search-bar .rs-picker-search-bar-input {
 }
 .rs-btn-close {
   background: transparent;
-  position: absolute;
-  top: 0;
-  right: 0;
   padding: 8px 8px 0;
   font-size: 12px;
   line-height: 1;
@@ -16789,7 +16786,7 @@ textarea.rs-picker-menu .rs-picker-search-bar .rs-picker-search-bar-input {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: center;
 }
 .sidebar .logo-details i{
   font-size: 30px;
@@ -16963,7 +16960,7 @@ textarea.rs-picker-menu .rs-picker-search-bar .rs-picker-search-bar-input {
   }
 
   .sidebar .logo-details{
-    margin-left: 33px;
+    margin-left: 38px;
   }
 
   .sidebar .logo-details i{

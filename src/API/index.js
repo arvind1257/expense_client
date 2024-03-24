@@ -9,4 +9,8 @@ if (token) {
 }
 
 export const getCustomAmounts = (fetchData) => API.post(`/amount/custom`,fetchData)
-export const getUserDetails = (authData) => API.get(`/user/${authData.userId}`)
+export const getUserDetails = () => API.get(`/user/details`)
+export const postAddAmounts = (postData) => API.post(`/amount/add`,postData)
+export const postExchangeAmount = (postData) => API.patch(`/user/exchange`,postData)
+export const updateAmount = (updateData,id) => API.patch(`/amount/edit/${id}`,updateData)
+export const deleteAmount = (id) => API.delete(`/amount/delete/${id}`)

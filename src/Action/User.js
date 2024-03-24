@@ -32,10 +32,25 @@ export const logIn = (authData, navigate, onLoading) => async (dispatch) => {
     }
 };
 
-export const getUserDetails = (authData, navigate) => async (dispatch) => {
+export const getUserDetails = (navigate) => async (dispatch) => {
     try {
-        const { data } = await api.getUserDetails(authData);
+        const { data } = await api.getUserDetails();
         dispatch({type:"FETCH_CURRENT_USER",payload:data})
+    } catch (err) {
+            navigate("/Home", {
+                state: {
+                    status: err.response.status,
+                    message: err.response.message,
+                },
+            });
+    }
+};
+
+export const postExchangeAmount = (postData,navigate,onLoading) => async (dispatch) => {
+    try {
+        const { data } = await api.postExchangeAmount(postData);
+        dispatch({type:"FETCH_CURRENT_USER",payload:data})
+        onLoading(false)
     } catch (err) {
             navigate("/Home", {
                 state: {
