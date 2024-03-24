@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import "./Home.css"
 import { FaCalendar } from 'react-icons/fa';
 import Filter from '../../Components/Filter/Filter'
@@ -9,10 +9,12 @@ import { deleteAmount, getCustomAmounts, postAddAmounts, updateAmount } from '..
 import { getUserDetails, postExchangeAmount } from '../../Action/User'
 import { useNavigate, useLocation } from "react-router-dom"
 import { Button, Modal, Input, SelectPicker, DatePicker } from 'rsuite'
+import {useWindowDimensions} from "../../utils.js"
+import ContextMenu from "../../utils.js";
 import "./AddExpense.css"
 
 const Home = ({ loading, onLoading }) => {
-
+	const menuItems = ["Download"];
 	const getMinDate = () => {
 		const today = new Date();
 		today.setHours(0, 0, 0, 0); // Set time to 00:00:00.000
@@ -26,10 +28,12 @@ const Home = ({ loading, onLoading }) => {
 		return today;
 	}
 
-
+	const ref = useRef();
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const location = useLocation()
+	const [rows,setRows] = useState(10);
+	const { height, width } = useWindowDimensions();
 	let data = useSelector((state) => state.customAmountReducer)
 	const User = useSelector((state) => state.currentUserReducer)
 	const [filter, setFilter] = useState([]);
@@ -190,9 +194,11 @@ const Home = ({ loading, onLoading }) => {
 	}
 
 	const handleDelete = (id) =>{
+		if(window.confirm("Do you want to delete?")){
 		handleClose();
 		onLoading(true)
 		dispatch(deleteAmount(id,{from,to},navigate,onLoading))
+		}
 	}
 
 	const handleOpen = (id) =>{
@@ -222,6 +228,33 @@ const Home = ({ loading, onLoading }) => {
 		}
 	}
 
+	const exportExcel = () => {
+        import('xlsx').then((xlsx) => {
+            const worksheet = xlsx.utils.json_to_sheet(filter.map((item)=>{return {date:item.date,note:item.note,type:item.type,method:item.method.name,category:item.category,amount:parseInt(item.amount.amount)}}));
+            const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
+            const excelBuffer = xlsx.write(workbook, {
+                bookType: 'xlsx',
+                type: 'array'
+            });
+
+            saveAsExcelFile(excelBuffer, 'products');
+        });
+    };
+
+	const saveAsExcelFile = (buffer, fileName) => {
+        import('file-saver').then((module) => {
+            if (module && module.default) {
+                let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+                let EXCEL_EXTENSION = '.xlsx';
+                const data = new Blob([buffer], {
+                    type: EXCEL_TYPE
+                });
+
+                module.default.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+            }
+        });
+    };
+
 	if (methodList.length === 0 && filter.length !== 0) {
 		setMethodList(Array.from(new Set(filter.map((element) => element.method.name))))
 	}
@@ -231,6 +264,15 @@ const Home = ({ loading, onLoading }) => {
 	if (categoryList.length === 0 && filter.length !== 0) {
 		setCategoryList(Array.from(new Set(filter.map((element) => element.category))))
 	}
+
+	useEffect(()=>{
+		if(height>1200){
+			setRows(20);
+		}
+		else{
+			setRows(10);
+		}
+	},[height])
 
 	useEffect(() => {
 		if (!data) {
@@ -277,6 +319,7 @@ const Home = ({ loading, onLoading }) => {
 	console.log(addExpense)
 	console.log(exchange)
 	console.log(open)
+	console.log({width,height})
 
 	return (
 		<>
@@ -324,9 +367,9 @@ const Home = ({ loading, onLoading }) => {
 								<Filter methodList={methodList} typeList={typeList} categoryList={categoryList} from={from} to={to} method={method} type={type} category={category} changeValue={changeValue} getMinDate={getMinDate} />
 							}
 						</div>
-						<div className='home-container-3` row justify-content-center'>
+						<div ref={ref} className='home-container-3` row justify-content-center'>
 							{filter &&
-								<DataTable selectionMode={"single"} onRowClick={(event)=>handleOpen(event.data._id)} className='col-xl-10 col-lg-10' stripedRows value={filter} showGridlines paginator rows={10} size={"large"} tableStyle={{ minWidth: '50rem' }}>
+								<DataTable  selectionMode={"single"} onRowClick={(event)=>handleOpen(event.data._id)} className='col-xl-10 col-lg-10' stripedRows value={filter} showGridlines paginator rows={rows} size={"large"} tableStyle={{ minWidth: '50rem' }}>
 									<Column field='date' header="Date"></Column>
 									<Column field="note" header="Items"></Column>
 									<Column field="type" header="Type"></Column>
@@ -450,6 +493,7 @@ const Home = ({ loading, onLoading }) => {
 					</Button>
 				</Modal.Footer>
 			</Modal>
+			<ContextMenu parent={ref} menuItems={menuItems} clickedMenu={()=>exportExcel()} />
 		</>
 	)
 }

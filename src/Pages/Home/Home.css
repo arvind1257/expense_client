@@ -49,6 +49,13 @@
     min-width: 2rem;
 }
 
+.p-datatable.p-component{
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
 @media (max-width:500px){
     .p-paginator .p-paginator-pages .p-paginator-page,
 .p-paginator .p-paginator-first, .p-paginator .p-paginator-prev, .p-paginator .p-paginator-next, .p-paginator .p-paginator-last {

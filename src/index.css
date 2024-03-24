@@ -11,3 +11,27 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#content-menu {
+  width: 100px;
+  position: absolute;
+  background-color: rgba(0,0,0,0.8);
+  list-style: none;
+  color:white;
+  padding: 5px 0px;
+  margin: 0;
+  /** Reddit feedback **/
+  border: solid 1px gray;
+  border-bottom: none;
+  border-radius: 10px;
+}
+
+#content-menu li {
+  text-decoration: none;
+  cursor: pointer;
+  padding: 10px;
+}
+
+#content-menu li:hover {
+  background-color: rgba(0,0,0,0.8);
+}
