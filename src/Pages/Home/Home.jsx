@@ -19,14 +19,14 @@ const Home = ({ loading, onLoading }) => {
 	const getMinDate = () => {
 		const today = new Date();
 		today.setHours(0, 0, 0, 0); // Set time to 00:00:00.000
-		return today;
+		return moment(today).format("YYYY-MM-DD");
 	};
 
 	const getMonthFirst = () => {
 		const today = new Date();
 		today.setHours(0, 0, 0, 0); // Set time to 00:00:00.000
 		today.setDate(1);
-		return today;
+		return moment(today).format("YYYY-MM-DD");
 	}
 
 	const ref = useRef();
@@ -321,6 +321,7 @@ const Home = ({ loading, onLoading }) => {
 	console.log(exchange)
 	console.log(open)
 	console.log({width,height})
+	console.log({from,to})
 
 	return (
 		<>
