@@ -4,14 +4,14 @@ import { logout } from "./Logout";
 
 export const logIn = (authData, navigate, onLoading) => async (dispatch) => {
     try {
-        // const { data } = await axios.post(
-        //     "https://aware-gray-caridea.cyclic.app/user/login",
-        //     authData
-        // );
         const { data } = await axios.post(
-            "http://localhost:5000/user/login",
+            "https://aware-gray-caridea.cyclic.app/user/login",
             authData
         );
+        // const { data } = await axios.post(
+        //     "http://localhost:5000/user/login",
+        //     authData
+        // );
 
         if (data) {
             console.log(data.result)
