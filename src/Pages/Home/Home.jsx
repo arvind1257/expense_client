@@ -12,6 +12,7 @@ import { Button, Modal, Input, SelectPicker, DatePicker } from 'rsuite'
 import {useWindowDimensions} from "../../utils.js"
 import ContextMenu from "../../utils.js";
 import "./AddExpense.css"
+import moment from "moment"
 
 const Home = ({ loading, onLoading }) => {
 	const menuItems = ["Download"];
@@ -116,7 +117,7 @@ const Home = ({ loading, onLoading }) => {
 		if (variable === "from") {
 			if (checkDate(value, to)) {
 				dispatch({ type: "FETCH_CUSTOM_AMOUNTS", payload: null })
-				setFrom(value);
+				setFrom(moment(value).format("YYYY-MM-DD"));
 			}
 			else
 				alert("Invalid Date");
@@ -124,7 +125,7 @@ const Home = ({ loading, onLoading }) => {
 		else if (variable === "to") {
 			if (checkDate(from, value)) {
 				dispatch({ type: "FETCH_CUSTOM_AMOUNTS", payload: null })
-				setTo(value);
+				setTo(moment(value).format("YYYY-MM-DD"));
 			}
 			else
 				alert("Invalid Date");
@@ -405,7 +406,7 @@ const Home = ({ loading, onLoading }) => {
 								</tr>
 								<tr>
 									<th>Date</th>
-									<td><DatePicker className='addexpense_element' value={new Date(addExpense.date)} onChange={(value) => setAddExpense((prev) => { return { ...prev, date: value } })} onClean={() => setAddExpense((prev) => { return { ...prev, date: getMinDate() } })} oneTap format="MMM dd, yyyy" caretAs={FaCalendar} shouldDisableDate={(date) => date > getMinDate()} /></td>
+									<td><DatePicker className='addexpense_element' value={new Date(addExpense.date)} onChange={(value) => setAddExpense((prev) => { return { ...prev, date: moment(value).format("YYYY-MM-DD") } })} onClean={() => setAddExpense((prev) => { return { ...prev, date: getMinDate() } })} oneTap format="MMM dd, yyyy" caretAs={FaCalendar} shouldDisableDate={(date) => date > getMinDate()} /></td>
 								</tr>
 								<tr>
 									<th>Category</th>
