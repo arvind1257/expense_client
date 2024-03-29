@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./Components/Header/Header";
 import Navbar from "./Components/Navbar/Navbar";
 import './App.css';
@@ -19,6 +19,13 @@ function App() {
   const onLoading = (status) => {
     setLoading(status);
   }
+
+  useEffect(()=>{
+    window.addEventListener('beforeunload', (event) => {
+      console.log(event);
+      event.returnValue = `Are you sure you want to leave?`;
+    });
+  })
 
   return (
     <>

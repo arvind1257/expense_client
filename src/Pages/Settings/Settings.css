@@ -1,0 +1,130 @@
+.setting-content{
+    padding:10px 20px;
+}
+
+.setting-content-1{
+    width:210px;
+    border-right: 2px groove #39ace7;
+    transition: 0.5s;
+}
+
+.setting-content-2{
+    width: calc(100% - 200px);
+    align-items: flex-start;
+}
+
+.setting-content-1 ul{
+    list-style-type: none;
+    padding:0px;
+    padding-right:9px ;
+    margin-left: -10px;
+    color:black;
+    font-size: 18px;
+}
+
+.setting-content-1 ul li{
+    padding:10px 0px 10px 10px;
+    cursor: pointer;
+}
+
+.setting-content-1 ul li.active1{
+    background-color: #39ace7;
+    border-radius: 20px;
+    color:white;
+}
+
+.setting-content-1 ul li i{
+    margin-right: 10px;
+}
+
+.setting-content-2 table{
+    margin: 15px;
+    font-size:18px;
+}
+
+.setting-content-2 table td{
+    padding:10px 5px;
+}
+
+.setting-content-2 .profile-table td:nth-child(odd),
+.setting-content-2 .type-table span{
+    font-weight: bold;
+}
+
+.setting-content-2 .type-table td:nth-child(odd){
+    width:40%;
+}
+.setting-content-2 .type-table td:nth-child(even){
+    width:60%;
+}
+
+.setting-content-2 .method-table td:nth-child(1){
+    width:30%;
+}
+.setting-content-2 .method-table td:nth-child(2){
+    width:30%;
+}
+.setting-content-2 .method-table td:nth-child(3){
+    width:40%;
+}
+
+.setting-content-2 .type-table i,
+.setting-content-2 .method-table i{
+    color:#0784b5;
+    cursor: pointer;
+}
+
+.setting-content-2 table td .element{
+    width:100%;
+    font-size: 16px;
+}
+
+
+.setting-content-2 table .action{
+    padding:5px 15px;
+    border-radius: 10px;
+    background-color:rgba(57, 172, 231,0.8);
+    color:white;
+    outline:none;
+    border:none; 
+    box-shadow:#39ace7 0px 7px 0px 0px;
+    transition: 0.2s;
+}
+
+.setting-content-2 table .action:active {
+    box-shadow: none;
+    transform: translateY(7px);
+    transition: 35ms ;
+   }
+
+.setting-content-2 table .action:hover:before {
+    transition: all .0s;
+    transform: translateY(100%);
+}
+
+.addexpensetype .addType td{
+    padding:10px;
+}
+
+/* .method-table .rs-stack-item{
+    overflow: visible !important;
+} */
+
+@media (max-width:700px){
+    .setting-content-1{
+        width: 40px;
+    }
+    .setting-content-2{
+        width: calc(100% - 40px);
+        min-width:450px;
+    }
+    .setting-content-1 span{
+        display: none;
+    }
+    .setting-content-2 table td .element{
+        width: 80%;
+    }
+    .setting-content-2 table .action{
+        margin-right: 65px;
+    }
+}

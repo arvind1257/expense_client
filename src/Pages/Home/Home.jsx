@@ -332,7 +332,7 @@ const Home = ({ loading, onLoading }) => {
 								<div className='row justify-content-center flex-column'>
 									{
 										expense !== null && Object.keys(expense).map((key) => (
-											<div>{key}:₹{expense[key]}</div>
+											<div key={key}>{key}:₹{expense[key]}</div>
 										))
 									}
 								</div>
@@ -342,7 +342,7 @@ const Home = ({ loading, onLoading }) => {
 								<div className='row justify-content-center flex-column'>
 									{
 										income !== null && Object.keys(income).map((key) => (
-											<div>{key}:₹{income[key]}</div>
+											<div key={key}>{key}:₹{income[key]}</div>
 										))
 									}
 								</div>
@@ -353,7 +353,7 @@ const Home = ({ loading, onLoading }) => {
 									{
 										expense !== null && User !== null && Object.keys(expense).map((key) => (
 											User.method.filter((item) => item.name === key).map((item) => (
-												<div>{key}:₹{item.amount}</div>
+												<div key={key}>{key}:₹{item.amount}</div>
 											))
 
 										))

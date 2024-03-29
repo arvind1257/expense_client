@@ -23,6 +23,35 @@ export function useWindowDimensions() {
 	return windowDimensions;
 }
 
+function getCustomDimensions(element) {
+	
+	let width1 = element.current?element.current.offsetWidth:0;
+	let height1 = element.current?element.current.offsetHeight:0;
+	console.log(width1,height1)
+	return {
+		width1,
+		height1
+	}
+}
+
+export function useCustomDimensions(element) {
+	const [customDimensions, setCustomDimensions] = useState(getCustomDimensions(element));
+	console.log(element.current)
+	useEffect(() => {
+		function handleResize() {
+			setCustomDimensions(getCustomDimensions(element));
+		}
+		if(element.current){
+			element.current.addEventListener('resize1', handleResize);
+			return () => element.current.removeEventListener('resize1', handleResize);
+		}
+		
+	}, [element]);
+
+	console.log(customDimensions)
+	return customDimensions;
+}
+
 const ContextMenu = ({ parent,menuItems, clickedMenu }) => {
 	// Changed to position as one state reddit feedback
 	const [position, setPosition] = useState();

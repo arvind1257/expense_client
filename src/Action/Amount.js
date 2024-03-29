@@ -1,5 +1,22 @@
 import * as api from "../API";
 
+
+export const getBankList = (navigate,onLoading) => async (dispatch) =>{
+    try{
+        const {data} = await api.getBankList()
+        dispatch({type:"FETCH_BANK_LIST",payload:data})
+    }
+    catch(err){
+        navigate('/Settings',{
+            state:{
+                status:err.response.status,
+                message:err.response.message,
+            },
+        })
+        onLoading(false)
+    }
+}
+
 export const getCustomAmounts = (fetchData, navigate, onLoading) => async (dispatch) => {
     try {
         console.log(fetchData)
@@ -12,6 +29,8 @@ export const getCustomAmounts = (fetchData, navigate, onLoading) => async (dispa
                     message: err.response.message,
                 },
             });
+            
+        onLoading(false)
     }
 };
 
@@ -29,6 +48,8 @@ export const postAddAmounts = (postData,fetchData,navigate,onLoading) => async (
                     message: err.response.message,
                 },
             });
+            
+        onLoading(false)
     }
 };
 
@@ -46,6 +67,8 @@ export const updateAmount = (updateData,id,fetchData,navigate,onLoading) => asyn
                     message: err.response.message,
                 },
             });
+            
+        onLoading(false)
     }
 };
 
@@ -63,5 +86,7 @@ export const deleteAmount = (id,fetchData,navigate,onLoading) => async (dispatch
                     message: err.response.message,
                 },
             });
+            
+        onLoading(false)
     }
 };

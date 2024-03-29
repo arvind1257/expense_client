@@ -1,0 +1,88 @@
+.note-container{
+    padding:10px;
+}
+
+.note-container-1,
+.note-container-2{
+    margin-bottom: 30px;;
+}
+
+.note-container-1 .title,
+.note-container-2 .title{
+    font-size: 25px;
+}
+
+.note-container-1{
+    min-width:350px;
+}
+
+.note-container .ql-container{
+    min-height: 100px;
+}
+
+.note-container .action{
+    float:right;
+    margin:10px 0px;
+    font-size: 18px;
+}
+
+.note-container .action button{
+    padding:5px 15px;
+    border-radius: 10px;
+    background-color:rgba(57, 172, 231,0.8);
+    color:white;
+    outline:none;
+    border:none; 
+    box-shadow:#39ace7 0px 7px 0px 0px;
+    transition: 0.2s;
+}
+
+.note-container .action button:active {
+    box-shadow: none;
+    transform: translateY(7px);
+    transition: 35ms ;
+   }
+
+.note-container .action  button:hover:before {
+    transition: all .0s;
+    transform: translateY(100%);
+}
+
+.note-container .message{
+    margin:10px 10px;
+    padding:10px;
+    width:fit-content;
+    height: fit-content;
+    background-color: rgba(255,255,255,0.9);
+    border-radius: 10px;
+}
+
+.note-container .message table{
+    width:fit-content;
+    height: fit-content;
+}
+
+.note-container .message table P{
+    overflow: auto;
+    line-height: 1.4em;
+    margin: 6px 0px;
+    font-size: 15px;
+    color:black;
+}
+
+.note-container .message table button{
+    background-color: rgba(255,255,255,0.0);
+    border: none;
+    outline: none;
+    padding: 2px 10px;
+}
+
+.note-container .arrow-left {
+    position: relative;
+    top:38px;
+    width: 0; 
+    height: 0; 
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent; 
+    border-right:10px solid rgba(255,255,255,0.9); 
+  }

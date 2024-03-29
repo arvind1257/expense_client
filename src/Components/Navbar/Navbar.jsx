@@ -44,15 +44,15 @@ const Admin = () => {
                     </ul>
                 </li>
                 <li>
-                    <div class="iocn-link" onClick={() => subMenu(0)}>
+                    <div className="iocn-link" onClick={() => subMenu(0)}>
                         <span>
-                            <i class='bx bx-plus'></i>
-                            <span class="link_name">Amount</span>
+                            <i className='bx bx-plus'></i>
+                            <span className="link_name">Amount</span>
                         </span>
-                        <i class='bx bxs-chevron-down arrow'></i>
+                        <i className='bx bxs-chevron-down arrow'></i>
                     </div>
-                    <ul class="sub-menu">
-                        <li><Link class="link_name">Amount</Link></li>
+                    <ul className="sub-menu">
+                        <li><Link className="link_name">Amount</Link></li>
                         <li><Link to='/addexpense'>Add Expense</Link></li>
                         <li><Link to='/exchange'>Exchange</Link></li>
                     </ul>
