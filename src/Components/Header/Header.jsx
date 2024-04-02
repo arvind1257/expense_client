@@ -10,8 +10,9 @@ import "./Header.css";
 //import { logout } from "../../actions/logout";
 
 import "../Navbar/Navbar.css";
-const Header = () => {
+const Header = ({search,setSearch1}) => {
     const location = useLocation()
+
 
 
     return (
@@ -19,7 +20,7 @@ const Header = () => {
             {location.pathname!=='/' ?
                 <div className="search-bar">
                     <i className="bx bx-search"></i>
-                    <input type="search" placeholder="Search" />
+                    <input type="search" value={search} onChange={(e)=>setSearch1(e.target.value)} placeholder="Search" />
                 </div>
                 :
                 <div className="websiteTitle"> 

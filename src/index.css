@@ -12,13 +12,8 @@ code {
     monospace;
 }
 
-.rs-popover{
-  max-height: 200px;
-  overflow: scroll;
-}
-
 .rs-picker-select-menu.rs-picker-popup{
-  max-height: 250px;
+  max-height: 200px;
 }
 
 #content-menu {

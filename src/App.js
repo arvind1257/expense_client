@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Header from "./Components/Header/Header";
 import Navbar from "./Components/Navbar/Navbar";
 import './App.css';
@@ -19,24 +19,26 @@ function App() {
   const onLoading = (status) => {
     setLoading(status);
   }
+  
+  const [search,setSearch] = React.useState("");
 
-  useEffect(()=>{
-    window.addEventListener('beforeunload', (event) => {
-      console.log(event);
-      event.returnValue = `Are you sure you want to leave?`;
-    });
-  })
+  // useEffect(()=>{
+  //   window.addEventListener('beforeunload', (event) => {
+  //     console.log(event);
+  //     event.returnValue = `Are you sure you want to leave?`;
+  //   });
+  // })
 
   return (
     <>
       {
         loading && <Loading></Loading>
       }
-      <Header></Header>
+      <Header search={search} setSearch1={(value)=>setSearch(value)}></Header>
       <Navbar></Navbar>
       <Routes>
         <Route path='/' element={<Login loading={loading} onLoading={(status) => onLoading(status)} />}></Route>
-        <Route path='/Home' element={<Home loading={loading} onLoading={(status) => onLoading(status)} />}></Route>
+        <Route path='/Home' element={<Home search={search} loading={loading} onLoading={(status) => onLoading(status)} />}></Route>
         <Route path='/addexpense' element={<Home loading={loading} onLoading={(status) => onLoading(status)} />}></Route>
         <Route path='/exchange' element={<Home loading={loading} onLoading={(status) => onLoading(status)} />}></Route>
         <Route path='/Report' element={<Report loading={loading} onLoading={(status) => onLoading(status)} />}></Route>

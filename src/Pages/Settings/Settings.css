@@ -47,15 +47,15 @@
 }
 
 .setting-content-2 .profile-table td:nth-child(odd),
-.setting-content-2 .type-table span{
-    font-weight: bold;
-}
 
-.setting-content-2 .type-table td:nth-child(odd){
-    width:40%;
+.setting-content-2 .type-table td:nth-child(1){
+    width:30%;
 }
-.setting-content-2 .type-table td:nth-child(even){
-    width:60%;
+.setting-content-2 .type-table td:nth-child(2){
+    width:30%;
+}
+.setting-content-2 .type-table td:nth-child(3){
+    width:40%;
 }
 
 .setting-content-2 .method-table td:nth-child(1){

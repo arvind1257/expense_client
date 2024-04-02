@@ -76,7 +76,7 @@ const Settings = ({onLoading,Loading}) => {
 		if(action==="New-type"){
 			setType([{
 				name:"",
-				type:"Expense"
+				type:""
 			}])
 			setButtonType(action);
 		}
@@ -96,7 +96,7 @@ const Settings = ({onLoading,Loading}) => {
 			let temp = type.filter(()=>true)
 			temp.push({
 				name:"",
-				type:"Expense"
+				type:""	
 			})
 			setType(temp);
 		}
@@ -115,7 +115,7 @@ const Settings = ({onLoading,Loading}) => {
 			setCategory(temp);
 		}
 		else if(action==="Edit-type"){
-			let temp =  structuredClone(User.type.filter((item)=>item.name!=="Income"))
+			let temp =  structuredClone(User.type.filter((item)=>item.type!=="Income"))
 			temp.map((item)=>{item.action=false; return item})
 			setButtonType(action);
 			setType(temp);
@@ -145,19 +145,17 @@ const Settings = ({onLoading,Loading}) => {
 	const changeType = (variable,index,value) =>{
 		console.log({variable,index,value})
 		if(value==="delete"){
-			console.log('1')
 			let temp = type.filter((item,i)=>{if(i!==index) return true; else return false;})
 			setType(temp);
 		}
 		else if(variable==="action" && value===false){
-			console.log('2')
 			let temp = structuredClone(type);
 			temp[index][variable] = value;
 			temp[index].name = User.type[index].name;
+			temp[index].type = User.type[index].type;
 			setType(temp);
 		}
 		else{
-			console.log('3')
 			let temp =  structuredClone(type);
 			temp[index][variable] = value;
 			setType(temp);
@@ -238,7 +236,7 @@ const Settings = ({onLoading,Loading}) => {
 
 	const handleType = (action) => {
 		if(action==="New"){
-			if(type.filter((item)=>item.name==="").length>0){
+			if(type.filter((item)=>item.name==="" || item.type==="").length>0){
 				alert("Kindly fill the empty fields")
 			}
 			else{
@@ -252,7 +250,7 @@ const Settings = ({onLoading,Loading}) => {
 					onLoading(true);
 					let temp = structuredClone(type)
 					ChangeAction(null)
-					// console.log(type)
+					console.log(temp)
 					dispatch(updateDetails(temp,"type",navigate,onLoading))
 				}
 			}
@@ -263,7 +261,7 @@ const Settings = ({onLoading,Loading}) => {
 				alert("No changes found to update the list")
 			}
 			else{
-				if(type.filter((item1)=>{if(User.type.filter((item2)=>item1.name===item2.name && item1.action===true).length>0) return true; else return false;}).length>0){
+				if(type.filter((item1)=>{if(User.type.filter((item2)=>item1.name===item2.name && item1._id!==item2._id && item1.action===true).length>0) return true; else return false;}).length>0){
 					alert("The value you have edited now, is already exist in the list")
 				}
 				else if(type.filter((item1)=>{if(type.filter((item2)=>item1.name===item2.name && item1._id!==item2._id).length>0) return true; else return false;}).length>0){
@@ -281,7 +279,7 @@ const Settings = ({onLoading,Loading}) => {
 					})
 					onLoading(true)
 					ChangeAction(null)
-					//console.log(temp)
+					console.log(temp)
 					dispatch(editDetails(temp,"type",navigate,onLoading))
 				}
 			}
@@ -304,8 +302,8 @@ const Settings = ({onLoading,Loading}) => {
 					onLoading(true);
 					let temp = structuredClone(method)
 					ChangeAction(null)
-					//console.log(method)
 					dispatch(updateDetails(temp,"method",navigate,onLoading))
+					console.log(temp)
 				}
 			}
 		}
@@ -322,20 +320,21 @@ const Settings = ({onLoading,Loading}) => {
 					alert("No duplicate values are allowed")
 				}
 				else{
+
 					method.filter((item)=>item.action===true || item.action==="Delete").map((item)=>{
 						temp.push({
 							_id:item._id,
 							name:item.name,
 							amount:item.amount,
 							type:item.type,
-							action:item.action!=="Delete"?"Edit":"Delete"
+							action:item.action!=="Delete" && item.name===User.method.filter((item1)=>item._id===item1._id)[0].name?"Custom":item.action!=="Delete"?"Edit":"Delete"
 						})
 						return true;
 					})
 					onLoading(true);
 					ChangeAction(null)
-					console.log(temp)
 					dispatch(editDetails(temp,"method",navigate,onLoading))
+					console.log(temp)
 				}
 			}
 		}
@@ -513,24 +512,33 @@ const Settings = ({onLoading,Loading}) => {
 						<>
 						<table className='col-xl-6 col-lg-8 col-md-9 col-sm-11 type-table'>
 							<tr>
-								<td colSpan={2}>
-									<span style={{fontSize:"20px"}}>Your Current Expense Types : </span>
+								<td colSpan={3}>
+									<span style={{fontSize:"20px",fontWeight:"bold"}}>Your Current Expense Types : </span>
 								</td>
 							</tr>
+							<tr>
+								<td><b>Name</b></td>
+								<td><b>Type</b></td>
+								<td></td>
+							</tr>
+							
 							{
 								buttonType==="Edit-type" &&
-								type.filter((item)=>item.type==="Expense").map((item,index) => (
+								type.filter((item)=>item.type!=="Income").map((item,index) => (
 									item.action!=="Delete" &&
 									<tr>
 										<td><Input value={item.name} readOnly={!item.action} onChange={(value)=>changeType("name",index,value)}/></td>
+										<td><SelectPicker style={{width:"150px"}} value={item.type} readOnly={!item.action} onChange={(value)=>changeType("type",index,value)} data={[{label:"Expense",value:"Expense"},{label:"Settlement Expense",value:"Settlement Expense"}]} onClean={()=>changeType("type",index,User.type[index].type)}  /></td>
 										<td align='left'>&emsp;<i onClick={()=>changeType("action",index,!item.action)} className={item.action?"bx bx-x":"bx bxs-pencil"}></i>&ensp;<i onClick={()=>changeType("action",index,"Delete")} className='bx bxs-trash'></i></td>
 									</tr>
 								))
-							}{
+							}
+							{
 								buttonType!=="Edit-type" &&
-								User.type.filter((item)=>item.type==="Expense").map((item,index)=>(
+								User.type.filter((item)=>item.type!=="Income").map((item,index)=>(
 									<tr>
 										<td><Input value={item.name} readOnly={!item.action}/></td>
+										<td><Input value={item.type} readOnly={!item.action}/></td>
 										<td align='left'>&emsp;</td>
 									</tr>
 								))
@@ -540,11 +548,13 @@ const Settings = ({onLoading,Loading}) => {
 								<tr>
 									<td><button className='action' onClick={()=>handleType("Edit")} >Save</button></td>
 									<td><button className='action' onClick={()=>ChangeAction(null)}  >Cancel</button></td>
+									<td></td>
 								</tr>
 								:
 								<tr>
 									<td><button className='action' onClick={()=>ChangeAction("New-type")} >New</button></td>
 									<td><button className='action' onClick={()=>ChangeAction("Edit-type")}  >Edit</button></td>
+									<td></td>
 								</tr>
 
 							}
@@ -669,7 +679,8 @@ const Settings = ({onLoading,Loading}) => {
 									type && type.map((item,index)=>(
 										<tr>
 											<td><Input value={item.name} onChange={(value)=>changeType("name",index,value)}/></td>
-											<td align='left'>&emsp;<i onClick={()=>changeType("action",index,"delete")} className='bx bxs-trash'></i></td>
+											<td><SelectPicker style={{width:"150px"}} value={item.type} onChange={(value)=>changeType("type",index,value)} data={[{label:"Expense",value:"Expense"},{label:"Settlement Expense",value:"Settlement Expense"}]} /></td>
+											<td align='left'>&emsp;<i style={{position: "relative", top: "-10px"}} onClick={()=>changeType("action",index,"delete")} className='bx bxs-trash'></i></td>
 										</tr>
 									)) 
 								}

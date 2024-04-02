@@ -1,6 +1,7 @@
 import * as api from "../API";
 import axios from "axios";
 import { logout } from "./Logout";
+import { getCustomAmounts } from "./Amount";
 
 export const logIn = (authData, navigate, onLoading) => async (dispatch) => {
     try {
@@ -46,10 +47,11 @@ export const getUserDetails = (navigate) => async (dispatch) => {
     }
 };
 
-export const postExchangeAmount = (postData,navigate,onLoading) => async (dispatch) => {
+export const postExchangeAmount = (postData,fetchData,navigate,onLoading) => async (dispatch) => {
     try {
         const { data } = await api.postExchangeAmount(postData);
         dispatch({type:"FETCH_CURRENT_USER",payload:data})
+        dispatch(getCustomAmounts(fetchData,navigate,onLoading))
         onLoading(false)
     } catch (err) {
             navigate("/Home", {

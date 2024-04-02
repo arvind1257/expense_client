@@ -13,13 +13,13 @@ const Filter = ({methodList,typeList,categoryList,changeValue,from,to,method,typ
     const MenuPopover = React.forwardRef(({ selection, ...rest }, ref) => (
         <Popover ref={ref} {...rest}>
             
-                <Dropdown.Menu className='Filter-DropDown'>
+                <Dropdown.Menu className='Filter-DropDown' menuStyle={{maxHeight:"200px"}}>
                     
                     {
                         selection === "method" &&
                         <CheckboxGroup value={method}>
                         {
-                            methodList.map((item)=>(
+                            methodList.sort((a,b)=>a>b?1:-1).map((item)=>(
                             <Checkbox onChange={(value) => { changeValue(selection,value); handleSelectMenu(); }} value={item} >{item}</Checkbox>
                         ))
                         }
@@ -28,7 +28,7 @@ const Filter = ({methodList,typeList,categoryList,changeValue,from,to,method,typ
                     {
                         selection === "type" &&
                         <CheckboxGroup value={type}>{
-                        typeList.map((item)=>(
+                        typeList.sort((a,b)=>a>b?1:-1).map((item)=>(
                         <Checkbox onChange={(value) => { changeValue(selection,value); handleSelectMenu(); }} value={item} >{item}</Checkbox>
                         ))
                         }
@@ -37,7 +37,7 @@ const Filter = ({methodList,typeList,categoryList,changeValue,from,to,method,typ
                     {
                         selection === "category" &&
                         <CheckboxGroup value={category}>{
-                        categoryList.map((item)=>(
+                        categoryList.sort((a,b)=>a>b?1:-1).map((item)=>(
                         <Checkbox onChange={(value) => { changeValue(selection,value); handleSelectMenu(); }} value={item} >{item}</Checkbox>
                         ))
                         }</CheckboxGroup>

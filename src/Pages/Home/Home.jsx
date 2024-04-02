@@ -5,7 +5,7 @@ import Filter from '../../Components/Filter/Filter'
 import { DataTable } from "primereact/datatable"
 import { Column } from "primereact/column"
 import { useDispatch, useSelector } from "react-redux"
-import { deleteAmount, getCustomAmounts, postAddAmounts, updateAmount } from '../../Action/Amount'
+import { deleteAmount, getCustomAmounts, postAddAmounts, settleExpense, updateAmount } from '../../Action/Amount'
 import { getUserDetails, postExchangeAmount } from '../../Action/User'
 import { useNavigate, useLocation } from "react-router-dom"
 import { Button, Modal, Input, SelectPicker, DatePicker } from 'rsuite'
@@ -14,7 +14,7 @@ import ContextMenu from "../../utils.js";
 import "./AddExpense.css"
 import moment from "moment"
 
-const Home = ({ loading, onLoading }) => {
+const Home = ({search, loading, onLoading }) => {
 	const menuItems = ["Download"];
 	const getMinDate = () => {
 		const today = new Date();
@@ -38,9 +38,9 @@ const Home = ({ loading, onLoading }) => {
 	let data = useSelector((state) => state.customAmountReducer)
 	const User = useSelector((state) => state.currentUserReducer)
 	const [filter, setFilter] = useState([]);
-	const [methodList, setMethodList] = useState([]);
-	const [typeList, setTypeList] = useState([]);
-	const [categoryList, setCategoryList] = useState([]);
+	const [methodList, setMethodList] = useState(null);
+	const [typeList, setTypeList] = useState(null);
+	const [categoryList, setCategoryList] = useState(null);
 	const [from, setFrom] = useState(getMonthFirst());
 	const [to, setTo] = useState(getMinDate());
 	const [method, setMethod] = useState([]);
@@ -49,6 +49,15 @@ const Home = ({ loading, onLoading }) => {
 	const [expense, setExpense] = useState(null);
 	const [income, setIncome] = useState(null);
 	const [open,setOpen] = useState(null);
+	const [settle,setSettle] = useState({
+		_id:null,
+		item:"",
+		amount:0,
+		date:getMinDate(),
+		method:"",
+		category:"None",
+		type:""
+	})
 	const [addExpense, setAddExpense] = useState({
 		item: "",
 		amount: 0,
@@ -61,6 +70,7 @@ const Home = ({ loading, onLoading }) => {
 		from: null,
 		to: null,
 		amount: 0,
+		date:getMinDate()
 	})
 
 	const checkDate = (date1, date2) => {
@@ -81,9 +91,9 @@ const Home = ({ loading, onLoading }) => {
 		}
 
 		if (variable === "type" && newData.length !== 0) {
-			temp = temp.filter((item) => newData.includes(item.type))
+			temp = temp.filter((item) => newData.includes(item.type.name))
 		} else if (variable !== "type" && type.length !== 0) {
-			temp = temp.filter((item) => type.includes(item.type))
+			temp = temp.filter((item) => type.includes(item.type.name))
 		}
 
 		if (variable === "category" && newData.length !== 0) {
@@ -107,8 +117,18 @@ const Home = ({ loading, onLoading }) => {
 			from:null,
 			to:null,
 			amount:0,
+			date:getMinDate()
 		})
 		setOpen(null)
+		setSettle({
+			_id:null,
+			item:"",
+			amount:0,
+			date:getMinDate(),
+			method:"",
+			category:"None",
+			type:"Settlement"
+		})
 		navigate('/Home')
 	}
 
@@ -190,7 +210,7 @@ const Home = ({ loading, onLoading }) => {
 			handleClose();
 			onLoading(true);
 			dispatch(updateAmount(addExpense,id,{from,to},navigate,onLoading));
-			
+			console.log(addExpense)
 		}
 	}
 
@@ -207,15 +227,21 @@ const Home = ({ loading, onLoading }) => {
 		filter.filter((item)=>item._id===id).map((item)=>{
 			temp.item=item.note
 			temp.amount = item.amount.amount
-			console.log(new Date(item.date))
-			temp.date= new Date(item.date)
+			temp.date= moment(new Date(item.date)).format("YYYY-MM-DD")
 			temp.method=item.method.name
 			temp.category=item.category
-			temp.type=item.type
+			temp.type=item.type.name
 			return true;
 		});
-		setAddExpense(temp);
-		setOpen(id);
+		let test = filter.filter((item)=>item._id===id)[0].type
+		if(test!==null && test.type!=="Settlement" && test.Status!=="Inactive"){
+			setAddExpense(temp);
+			setOpen(id);
+		}
+		else{
+			alert("Can't be edited")
+			handleClose();
+		}
 	}
 
 	const handleExchange = () =>{
@@ -225,7 +251,32 @@ const Home = ({ loading, onLoading }) => {
 		else{
 			handleClose();
 			onLoading(true);
-			dispatch(postExchangeAmount(exchange,navigate,onLoading));
+			dispatch(postExchangeAmount(exchange,{from,to},navigate,onLoading));
+			console.log(exchange)
+		}
+	}
+
+	const handleSettle = (id) => {
+		setOpen(null)
+		let temp = filter.filter((item)=>item._id===id)[0]
+		setSettle((prev)=>{return {...prev,
+			_id:id,
+			item:"Settlement for "+temp.note+"("+moment(temp.date).format("YYYY-MM-DD")+")",
+			amount:temp.amount.amount,
+			type:temp.type.type==="Income" ?"Pay Out" : "Settlement"
+		}})
+	}
+
+	const handleSettlement = () => {
+		if(!settle.date || !settle.method ){
+			alert("Kindly fill all the details to settle the expense");
+		}
+		else{
+			let temp = structuredClone(settle)
+			handleClose();
+			onLoading(true);
+			dispatch(settleExpense(temp,{from,to},navigate,onLoading));
+			console.log(temp)
 		}
 	}
 
@@ -256,16 +307,6 @@ const Home = ({ loading, onLoading }) => {
         });
     };
 
-	if (methodList.length === 0 && filter.length !== 0) {
-		setMethodList(Array.from(new Set(filter.map((element) => element.method.name))))
-	}
-	if (typeList.length === 0 && filter.length !== 0) {
-		setTypeList(Array.from(new Set(filter.map((element) => element.type))))
-	}
-	if (categoryList.length === 0 && filter.length !== 0) {
-		setCategoryList(Array.from(new Set(filter.map((element) => element.category))))
-	}
-
 	useEffect(()=>{
 		if(height>1200){
 			setRows(20);
@@ -287,26 +328,30 @@ const Home = ({ loading, onLoading }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [data, dispatch])
 
-	useEffect(() => {
-		if (filter.length !== 0 && User!==null) {
-			let temp = [];
+	useEffect(()=>{
+		if(User!==null && filter!==null){
+			let temp = []
 			let exp = {}
 			let inc = {}
 			temp = Array.from(new Set(User.method.map((item) => item.name)))
-			temp.map((item1) => { exp[item1] = 0; return true; })
-			temp.map((item1) => { inc[item1] = 0; return true; })
-			filter.filter((item) => item.type !== "Income").map((item) => {
+			temp.map((item1) => { exp[item1] = 0; inc[item1] = 0; return true; })
+			console.log()
+			filter.filter((item) => item.type.type === "Expense" || item.type.type === "Settlement Expense" ).map((item) => {
 				exp[item.method.name] = parseInt(exp[item.method.name]) + parseInt(item.amount.amount);
 				return true;
 			})
-			filter.filter((item) => item.type === "Income").map((item) => {
+			filter.filter((item) => item.type.type === "Income").map((item) => {
 				inc[item.method.name] = parseInt(inc[item.method.name]) + parseInt(item.amount.amount);
 				return true;
 			})
-			setExpense(exp);
+			
+			setExpense(exp)
 			setIncome(inc)
+			setMethodList(Array.from(new Set(filter.map((element) => element.method.name))))
+			setTypeList(Array.from(new Set(filter.map((element) => element.type.name))))
+			setCategoryList(Array.from(new Set(filter.map((element) => element.category))).filter((element)=>element!=="None"))
 		}
-	}, [filter,User])
+	},[User,filter])
 
 	useEffect(() => {
 		if (!User) {
@@ -322,6 +367,7 @@ const Home = ({ loading, onLoading }) => {
 	console.log(open)
 	console.log({width,height})
 	console.log({from,to})
+	console.log(settle)
 
 	return (
 		<>
@@ -371,10 +417,10 @@ const Home = ({ loading, onLoading }) => {
 						</div>
 						<div ref={ref} className='home-container-3` row justify-content-center'>
 							{filter &&
-								<DataTable  selectionMode={"single"} onRowClick={(event)=>handleOpen(event.data._id)} className='col-xl-10 col-lg-10' stripedRows value={filter} showGridlines paginator rows={rows} size={"large"} tableStyle={{ minWidth: '50rem' }}>
+								<DataTable  selectionMode={"single"} onRowClick={(event)=>handleOpen(event.data._id)} className='col-xl-10 col-lg-10' stripedRows value={search!==""?filter.filter((item)=>item.note.includes(search)):filter} showGridlines paginator rows={rows} size={"large"} tableStyle={{ minWidth: '50rem' }}>
 									<Column field='date' header="Date"></Column>
 									<Column field="note" header="Items"></Column>
-									<Column field="type" header="Type"></Column>
+									<Column field="type.name" header="Type"></Column>
 									<Column field="amount.display" header="Amount"></Column>
 									<Column field="method.name" header="Method"></Column>
 								</DataTable>
@@ -383,7 +429,7 @@ const Home = ({ loading, onLoading }) => {
 					</div>
 				</div>
 			</div>
-			<Modal size="xs" open={open!==null || location.pathname === "/addexpense"} onClose={handleClose}>
+			<Modal size="xs" open={open!==null || location.pathname === "/addexpense"} onClose={()=>handleClose()}>
 				<Modal.Header>
 					<Modal.Title>
 						{
@@ -407,11 +453,7 @@ const Home = ({ loading, onLoading }) => {
 								</tr>
 								<tr>
 									<th>Date</th>
-									<td><DatePicker className='addexpense_element' value={new Date(addExpense.date)} onChange={(value) => setAddExpense((prev) => { return { ...prev, date: moment(value).format("YYYY-MM-DD") } })} onClean={() => setAddExpense((prev) => { return { ...prev, date: getMinDate() } })} oneTap format="MMM dd, yyyy" caretAs={FaCalendar} shouldDisableDate={(date) => date > getMinDate()} /></td>
-								</tr>
-								<tr>
-									<th>Category</th>
-									<td><SelectPicker className='addexpense_element' value={addExpense.category} onChange={(value) => setAddExpense((prev) => { return { ...prev, category: value } })} data={User.category.map((item) => { return { label: item, value: item } })} /></td>
+									<td><DatePicker className='addexpense_element' value={new Date(addExpense.date)} onChange={(value) => setAddExpense((prev) => { return { ...prev, date: moment(value).format("YYYY-MM-DD") } })} onClean={() => setAddExpense((prev) => { return { ...prev, date: getMinDate() } })} oneTap format="MMM dd, yyyy" caretAs={FaCalendar} shouldDisableDate={(date) => date > new Date(getMinDate())} /></td>
 								</tr>
 								<tr>
 									<th>Method</th>
@@ -425,11 +467,14 @@ const Home = ({ loading, onLoading }) => {
 									<th>Type</th>
 									{
 										open!==null ?
-										<td><SelectPicker className='addexpense_element' value={addExpense.type} onChange={(value) => setAddExpense((prev) => { return { ...prev, type: value } })} data={User.type.map((item) => { return { label: item.name !== "Income" ? item.name + " Expense" : item.name, value: item.name } })} onClean={()=>setAddExpense((prev)=>{return {...prev,type:filter.filter((item)=>item._id===open).map((item)=>{return item.type})[0]}})} disabledItemValues={addExpense.type!=="Income"?["Income"]:User.type.filter((item)=>item.type!=="Income").map((item)=>{return item.name})} /></td>
+										<td><SelectPicker className='addexpense_element' value={addExpense.type} onChange={(value) => setAddExpense((prev) => { return { ...prev, type: value,category: User.type.filter((item)=>item.name===value)[0].type!=="Expense"?"None":"" } })} data={User.type.sort((a,b)=>a.type===b.type?a.name>b.name?1:-1:a.type>b.type?-1:1).map((item) => { return { label: item.type !== "Income" ? item.name + " Expense" : item.name, value: item.name } })} onClean={()=>setAddExpense((prev)=>{return {...prev,type:filter.filter((item)=>item._id===open).map((item)=>{return item.type.name})[0]}})} disabledItemValues={User.type.filter((item)=>item.name===addExpense.type)[0].type!=="Income" ?User.type.filter((item)=>item.type==="Income").map((item)=>{return item.name}):User.type.filter((item)=>item.type!=="Income").map((item)=>{return item.name})} /></td>
 										:
-										<td><SelectPicker className='addexpense_element' value={addExpense.type} onChange={(value) => setAddExpense((prev) => { return { ...prev, type: value } })} data={User.type.map((item) => { return { label: item.name !== "Income" ? item.name + " Expense" : item.name, value: item.name } })} /></td>
+										<td><SelectPicker className='addexpense_element' value={addExpense.type} onChange={(value) => setAddExpense((prev) => { return { ...prev, type: value,category: User.type.filter((item)=>item.name===value)[0].type!=="Expense"?"None":"" } })} data={User.type.sort((a,b)=>a.type===b.type?a.name>b.name?1:-1:a.type>b.type?-1:1).map((item) => { return { label: item.type !== "Income" ? item.name + " Expense" : item.name, value: item.name } })} /></td>
 									}
-									
+								</tr>
+								<tr>
+									<th>Category</th>
+									<td><SelectPicker className='addexpense_element' value={addExpense.category} onChange={(value) => setAddExpense((prev) => { return { ...prev, category: value } })} data={User.category.map((item) => { return { label: item, value: item } })} disabled={User.type.filter((item)=>item.name===addExpense.type).length>0? User.type.filter((item)=>item.name===addExpense.type)[0].type!=="Expense":true} /></td>
 								</tr>
 							</table>
 						}
@@ -439,6 +484,12 @@ const Home = ({ loading, onLoading }) => {
 					{
 						open!==null ? 
 						<>
+						{
+							(filter.filter((item)=>item._id===open)[0].type.type ==="Settlement Expense" || filter.filter((item)=>item._id===open)[0].type.name ==="Credit")&&
+							<Button onClick={()=>handleSettle(open)} appearance='primary'>
+								Settle
+							</Button>
+						}
 						<Button onClick={()=>handleEdit(open)} color="green" appearance="primary">
 							Update
 						</Button>
@@ -450,7 +501,7 @@ const Home = ({ loading, onLoading }) => {
 						<Button onClick={()=>handleAdd()} color="green" appearance="primary">
 							Save
 						</Button>
-						<Button onClick={handleClose} appearance="default">
+						<Button onClick={()=>handleClose()} appearance="default">
 							Cancel
 						</Button>
 						</>
@@ -459,7 +510,7 @@ const Home = ({ loading, onLoading }) => {
 				</Modal.Footer>
 			</Modal>
 			
-			<Modal size="xs" open={location.pathname === "/exchange"} onClose={handleClose}>
+			<Modal size="xs" open={location.pathname === "/exchange"} onClose={()=>handleClose()}>
 				<Modal.Header>
 					<Modal.Title>Add Expense</Modal.Title>
 				</Modal.Header>
@@ -490,7 +541,46 @@ const Home = ({ loading, onLoading }) => {
 					<Button onClick={()=>handleExchange()} color="green" appearance="primary">
 						Save
 					</Button>
-					<Button onClick={handleClose} appearance="subtle">
+					<Button onClick={()=>handleClose()} appearance="subtle">
+						Cancel
+					</Button>
+				</Modal.Footer>
+			</Modal>
+			<Modal size="xs" open={settle._id!==null} onClose={()=>handleClose()}>
+				<Modal.Header>
+					<Modal.Title>Expense Settlement</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<div className='addexpense'>
+						{
+							User &&
+
+							<table>
+								<tr>
+									<th>Item</th>
+									<td><Input className='addexpense_element' value={settle.item} readOnly={true} /></td>
+								</tr>
+								<tr>
+									<th>Amount</th>
+									<td><Input type="number" className='addexpense_element' value={settle.amount} readOnly={true}/></td>
+								</tr>
+								<tr>
+									<th>Date</th>
+									<td><DatePicker className='addexpense_element' value={new Date(settle.date)} onChange={(value) => setSettle((prev) => { return { ...prev, date: moment(value).format("YYYY-MM-DD") } })} onClean={() => setSettle((prev) => { return { ...prev, date: getMinDate() } })} oneTap format="MMM dd, yyyy" caretAs={FaCalendar} shouldDisableDate={(date) => date > new Date(getMinDate())} /></td>
+								</tr>
+								<tr>
+									<th>Method</th>
+									<td><SelectPicker className='addexpense_element' value={settle.method} onChange={(value) => setSettle((prev) => { return { ...prev, method: value } })} data={User.method.map((item) => { return { label: item.name,value: item.name } })}/></td>
+								</tr>
+							</table>
+						}
+					</div>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button onClick={()=>handleSettlement()} color="green" appearance="primary">
+						Save
+					</Button>
+					<Button onClick={()=>handleClose()} appearance="subtle">
 						Cancel
 					</Button>
 				</Modal.Footer>

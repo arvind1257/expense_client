@@ -20,6 +20,7 @@ export const getCustomAmounts = (fetchData) => API.post(`/amount/custom`,fetchDa
 export const postAddAmounts = (postData) => API.post(`/amount/add`,postData)
 export const updateAmount = (updateData,id) => API.patch(`/amount/edit/${id}`,updateData)
 export const deleteAmount = (id) => API.delete(`/amount/delete/${id}`)
+export const settleExpense = (settleData) => API.patch('/amount/settle',settleData)
 
 export const postMessage = (postData) => API.post(`/note/new`,postData)
 export const deleteMessage = (id) => API.delete(`/note/delete/${id}`)
