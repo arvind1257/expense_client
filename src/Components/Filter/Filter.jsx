@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import { Stack, Divider, Popover, Whisper, Dropdown,CheckboxGroup,Checkbox } from 'rsuite'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -9,6 +9,20 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 const Filter = ({methodList,typeList,categoryList,changeValue,from,to,method,type,category,getMinDate}) => {
 
     const ref = React.useRef();
+    
+    function handleSelectMenu() {
+        ref.current.close();
+    }
+
+    useEffect(() => {
+        const handleScroll = () => {
+            handleSelectMenu();
+        };
+
+        document.querySelector(".tabContent1").addEventListener('scroll', handleScroll);
+        document.querySelector(".Filter-Stack").addEventListener('scroll', handleScroll);
+        
+    }, []);
     
     const MenuPopover = React.forwardRef(({ selection, ...rest }, ref) => (
         <Popover ref={ref} {...rest}>
@@ -47,10 +61,6 @@ const Filter = ({methodList,typeList,categoryList,changeValue,from,to,method,typ
         </Popover>
 
     ));
-
-    function handleSelectMenu() {
-        ref.current.close();
-    }
 
     return (
         <>

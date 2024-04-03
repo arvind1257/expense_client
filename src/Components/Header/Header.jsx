@@ -13,11 +13,9 @@ import "../Navbar/Navbar.css";
 const Header = ({search,setSearch1}) => {
     const location = useLocation()
 
-
-
     return (
         <div className="top-navbar">
-            {location.pathname!=='/' ?
+            {location.pathname!=='/' && location.pathname!=='/Signup' ?
                 <div className="search-bar">
                     <i className="bx bx-search"></i>
                     <input type="search" value={search} onChange={(e)=>setSearch1(e.target.value)} placeholder="Search" />

@@ -27,7 +27,7 @@ const Admin = () => {
     }
     
     return (
-        location.pathname!=="/" &&
+        location.pathname!=="/" && location.pathname!=="/Signup" &&
         <div className="sidebar">
             <div className="logo-details">
                 <i className='bx bxs-wallet'></i>
