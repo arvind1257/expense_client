@@ -1,0 +1,39 @@
+.signupform{
+    position: fixed;
+    width: 100%;
+    top: 100px;
+}
+.signupform{
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+}
+.signupform .fieldset{
+    min-width: 400px;
+}
+.signupform .fieldset{
+    border-radius: 15px;
+    background-color: rgba(255,255,255,0.5);
+}
+
+.signupform .text span{
+    border-top: 2px solid #1f5e99;
+    border-bottom: 2px solid #1f5e99;
+}
+
+.singup-table .label{
+    font-weight: 600;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.singup-table tr td{
+    width:50%;
+}
+
+.signupform table td{
+    padding:15px;
+}
+
+@media screen {
+    
+}

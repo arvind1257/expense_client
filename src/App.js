@@ -10,8 +10,7 @@ import Note from './Pages/Note/Note';
 import Settings from './Pages/Settings/Settings';
 import Amount from "./Pages/Amount/Amount";
 import Login from "./Pages/Login/Login";
-
-
+import Signup from "./Pages/Signup/Signup";
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -38,6 +37,7 @@ function App() {
       <Navbar></Navbar>
       <Routes>
         <Route path='/' element={<Login loading={loading} onLoading={(status) => onLoading(status)} />}></Route>
+        <Route path='/Signup' element={<Signup />}></Route>
         <Route path='/Home' element={<Home search={search} loading={loading} onLoading={(status) => onLoading(status)} />}></Route>
         <Route path='/addexpense' element={<Home loading={loading} onLoading={(status) => onLoading(status)} />}></Route>
         <Route path='/exchange' element={<Home loading={loading} onLoading={(status) => onLoading(status)} />}></Route>
