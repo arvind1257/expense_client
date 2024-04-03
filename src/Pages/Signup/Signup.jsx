@@ -3,7 +3,7 @@ import "./Signup.css"
 import { Input, InputGroup } from 'rsuite'
 import EyeIcon from '@rsuite/icons/legacy/Eye';
 import EyeSlashIcon from '@rsuite/icons/legacy/EyeSlash';
-import CheckIcon from '@rsuite/icons/legacy/Check';
+//import CheckIcon from '@rsuite/icons/legacy/Check';
 
 const Signup = () => {
 
@@ -13,18 +13,18 @@ const Signup = () => {
 		pass: false,
 		confirm: false
 	})
-	const [profile,setProfile] = useState({
-		fname:"",
-		lname:"",
-		email:"",
-		pass:"",
-		confirm:"",
-		otp:"",
-	})
+		// const [profile,setProfile] = useState({
+		// 	fname:"",
+		// 	lname:"",
+		// 	email:"",
+		// 	pass:"",
+		// 	confirm:"",
+		// 	otp:"",
+		// })
 
-	const handleSubmit = () => {
+	// const handleSubmit = () => {
 
-	}
+	// }
 
 	return (
 		<div className="row signupform">
