@@ -15,6 +15,48 @@
     display: block;
 }
 
+.addexpense .payments{
+    border-collapse: collapse;
+    border:1px solid black;
+}
 
+.addexpense .navigate{
+    padding:2px;
+    border-radius: 10px;
+    background-color: #cadeef;
+    width:fit-content
+}
+
+.addexpense .navigate button{
+    color:black;
+    margin:2px;
+    padding:3px;
+    background-color: #cadeef;
+}
+
+.addexpense .navigate button:nth-child(1){
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.addexpense .navigate button:nth-child(2){
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.addexpense .navigate button.active{
+    color:white;
+    background-color: #39ace7;
+}
+
+.addexpense .settle_trash{
+    background: none;
+    border: none;
+    outline: none;
+    color:red;
+    font-size: 18px;
+}
+
+/*linear-gradient(140deg, #39ace7 0%, #9bd4e4 25%, #cadeef 50%, #9bd4e4 75%, #39ace7 100%)*/
 
 

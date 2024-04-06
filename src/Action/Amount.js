@@ -91,10 +91,28 @@ export const deleteAmount = (id,fetchData,navigate,onLoading) => async (dispatch
     }
 };
 
-export const settleExpense = (settleData,fetchData,navigate,onLoading) => async(dispatch) =>{
+export const postSettleExpense = (settleData,fetchData,navigate,onLoading) => async(dispatch) =>{
     try {
         console.log(settleData)
-        const { data } = await api.settleExpense(settleData)
+        const { data } = await api.postSettleExpense(settleData)
+        dispatch({type:"FETCH_CURRENT_USER",payload:data})
+        dispatch(getCustomAmounts(fetchData,navigate,onLoading))
+    } catch (err) {
+            navigate("/Home", {
+                state: {
+                    status: err.response.status,
+                    message: err.response.message,
+                },
+            });
+            
+        onLoading(false)
+    }
+}
+
+export const deleteSettleExpense = (settleData,fetchData,navigate,onLoading) => async(dispatch) =>{
+    try {
+        console.log(settleData)
+        const { data } = await api.deleteSettleExpense(settleData)
         dispatch({type:"FETCH_CURRENT_USER",payload:data})
         dispatch(getCustomAmounts(fetchData,navigate,onLoading))
     } catch (err) {

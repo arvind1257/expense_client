@@ -47,3 +47,12 @@ body{
   background-repeat: no-repeat;
   background-size: 100vw 100vh;
 }
+
+.amount-tooltip{
+  background-color: #39ace7 !important;
+  color: white !important;
+  font-size: 18px !important;
+}
+.rs-tooltip[class*=placement-right]:after{
+  border-bottom-color: #39ace7 !important;
+}

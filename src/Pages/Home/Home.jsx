@@ -5,10 +5,10 @@ import Filter from '../../Components/Filter/Filter'
 import { DataTable } from "primereact/datatable"
 import { Column } from "primereact/column"
 import { useDispatch, useSelector } from "react-redux"
-import { deleteAmount, getCustomAmounts, postAddAmounts, settleExpense, updateAmount } from '../../Action/Amount'
+import { deleteAmount, deleteSettleExpense, getCustomAmounts, postAddAmounts, postSettleExpense, updateAmount } from '../../Action/Amount'
 import { getUserDetails, postExchangeAmount } from '../../Action/User'
 import { useNavigate, useLocation } from "react-router-dom"
-import { Button, Modal, Input, SelectPicker, DatePicker } from 'rsuite'
+import { Button, Modal, Input, SelectPicker, DatePicker,Whisper,Tooltip } from 'rsuite'
 import {useWindowDimensions} from "../../utils.js"
 import ContextMenu from "../../utils.js";
 import "./AddExpense.css"
@@ -41,6 +41,7 @@ const Home = ({search, loading, onLoading }) => {
 	const [methodList, setMethodList] = useState(null);
 	const [typeList, setTypeList] = useState(null);
 	const [categoryList, setCategoryList] = useState(null);
+	const [view,setView] = useState("settle")
 	const [from, setFrom] = useState(getMonthFirst());
 	const [to, setTo] = useState(getMinDate());
 	const [method, setMethod] = useState([]);
@@ -49,14 +50,13 @@ const Home = ({search, loading, onLoading }) => {
 	const [expense, setExpense] = useState(null);
 	const [income, setIncome] = useState(null);
 	const [open,setOpen] = useState(null);
+	const [total,setTotal] = useState({});
 	const [settle,setSettle] = useState({
 		_id:null,
-		item:"",
+		original:0,
 		amount:0,
 		date:getMinDate(),
 		method:"",
-		category:"None",
-		type:""
 	})
 	const [addExpense, setAddExpense] = useState({
 		item: "",
@@ -122,12 +122,10 @@ const Home = ({search, loading, onLoading }) => {
 		setOpen(null)
 		setSettle({
 			_id:null,
-			item:"",
+			original:0,
 			amount:0,
 			date:getMinDate(),
 			method:"",
-			category:"None",
-			type:"Settlement"
 		})
 		navigate('/Home')
 	}
@@ -191,6 +189,16 @@ const Home = ({search, loading, onLoading }) => {
 		}
 	}
 
+	const buttonView = (item) =>{
+		return <button className='settle_trash' onClick={()=>handleDeleteSettlement(item)}><i className='bx bxs-trash'></i></button>
+	}
+
+	const handleDeleteSettlement = (id) => {
+		handleClose();
+		onLoading(true);
+		dispatch(deleteSettleExpense({amountId:settle._id,id:id._id},{from,to},navigate,onLoading));
+	}
+
 	const handleAdd = () =>{
 		if(!addExpense.item || !addExpense.amount || !addExpense.date || !addExpense.category || !addExpense.method || !addExpense.type){
 			alert("Kindly fill all the details to add expense");
@@ -231,17 +239,11 @@ const Home = ({search, loading, onLoading }) => {
 			temp.method=item.method.name
 			temp.category=item.category
 			temp.type=item.type.name
+			//temp.update=(User.type.filter((item1)=>item1._id===item.type._id).length>0 && item.payments.length===0)
 			return true;
 		});
-		let test = filter.filter((item)=>item._id===id)[0].type
-		if(test!==null && test.type!=="Settlement" && test.Status!=="Inactive"){
-			setAddExpense(temp);
-			setOpen(id);
-		}
-		else{
-			alert("Can't be edited")
-			handleClose();
-		}
+		setAddExpense(temp);
+		setOpen(id);
 	}
 
 	const handleExchange = () =>{
@@ -259,23 +261,26 @@ const Home = ({search, loading, onLoading }) => {
 	const handleSettle = (id) => {
 		setOpen(null)
 		let temp = filter.filter((item)=>item._id===id)[0]
+		let amt = parseInt(temp.amount.amount)
+		
+		if(temp.type.name==="Paid")
+			amt=0;
+
 		setSettle((prev)=>{return {...prev,
 			_id:id,
-			item:"Settlement for "+temp.note+"("+moment(temp.date).format("YYYY-MM-DD")+")",
-			amount:temp.amount.amount,
-			type:temp.type.type==="Income" ?"Pay Out" : "Settlement"
+			original:amt,
 		}})
 	}
 
 	const handleSettlement = () => {
-		if(!settle.date || !settle.method ){
+		if(!settle.date || !settle.method || !settle.amount){
 			alert("Kindly fill all the details to settle the expense");
 		}
 		else{
 			let temp = structuredClone(settle)
 			handleClose();
 			onLoading(true);
-			dispatch(settleExpense(temp,{from,to},navigate,onLoading));
+			dispatch(postSettleExpense(temp,{from,to},navigate,onLoading));
 			console.log(temp)
 		}
 	}
@@ -333,25 +338,43 @@ const Home = ({search, loading, onLoading }) => {
 			let temp = []
 			let exp = {}
 			let inc = {}
+			let total1 = {expense:0,income:0,wallet:0};
+			User.method.map((item)=>{
+				total1.wallet+=parseInt(item.amount);
+				return true;
+			})
 			temp = Array.from(new Set(User.method.map((item) => item.name)))
 			temp.map((item1) => { exp[item1] = 0; inc[item1] = 0; return true; })
 			console.log()
 			filter.filter((item) => item.type.type === "Expense" || item.type.type === "Settlement Expense" ).map((item) => {
 				exp[item.method.name] = parseInt(exp[item.method.name]) + parseInt(item.amount.amount);
+				total1.expense+=parseInt(item.amount.amount)
 				return true;
 			})
 			filter.filter((item) => item.type.type === "Income").map((item) => {
 				inc[item.method.name] = parseInt(inc[item.method.name]) + parseInt(item.amount.amount);
+				total1.income+=parseInt(item.amount.amount)
 				return true;
 			})
+
+			total1.expense = "₹"+total1.expense; 
+			total1.income = "₹"+total1.income;
+			total1.wallet = "₹"+total1.wallet;
 			
 			setExpense(exp)
 			setIncome(inc)
-			setMethodList(Array.from(new Set(filter.map((element) => element.method.name))))
-			setTypeList(Array.from(new Set(filter.map((element) => element.type.name))))
-			setCategoryList(Array.from(new Set(filter.map((element) => element.category))).filter((element)=>element!=="None"))
+			setTotal(total1)
+			
 		}
 	},[User,filter])
+
+	useEffect(() => {
+		if (User && data ) {
+			setMethodList(Array.from(new Set(data.map((element) => element.method.name))))
+			setTypeList(Array.from(new Set(data.map((element) => element.type.name))))
+			setCategoryList(Array.from(new Set(data.map((element) => element.category))).filter((element)=>element!=="None"))
+		}
+	}, [User, data])
 
 	useEffect(() => {
 		if (!User) {
@@ -368,7 +391,12 @@ const Home = ({search, loading, onLoading }) => {
 	console.log({width,height})
 	console.log({from,to})
 	console.log(settle)
+	if(settle._id){
+		console.log(filter.filter((item)=>item._id===settle._id))
+	}
 
+	
+	
 	return (
 		<>
 			<div className='tabContent'>
@@ -376,36 +404,56 @@ const Home = ({search, loading, onLoading }) => {
 					<div className='home-container row flex-column'>
 						<div className='home-container-1 row align-items-center' style={{ textAlign: "center" }}>
 							<div className='home-tab-1 col-xl-3 col-lg-3 col-md-4 col-sm-4 col-6'>
-								<span className='title'>Expense</span>
+								<Whisper placement="top" speaker={<Tooltip className="amount-tooltip"><p>{total.expense}</p></Tooltip>}>      
+									<span className='title'>Expense</span>
+								</Whisper>
 								<div className='row justify-content-center flex-column'>
+									<table style={{width:"fit-content",margin:"0px auto"}}>
 									{
 										expense !== null && Object.keys(expense).map((key) => (
-											<div key={key}>{key}:₹{expense[key]}</div>
+											<tr key={key}>
+												<td align="left">{key}</td>
+												<td align='right'><span style={{float:"left"}}>:</span>&nbsp;₹{expense[key]}</td>
+											</tr>
 										))
 									}
+									</table>
 								</div>
 							</div>
 							<div className='home-tab-1 col-xl-3 col-lg-3 col-md-4 col-sm-4 col-6'>
-								<span className='title'>Income{location.pathname === "addexpense"}</span>
+								<Whisper placement="top" speaker={<Tooltip className="amount-tooltip"><p>{total.income}</p></Tooltip>}>      
+									<span className='title'>Income</span>
+								</Whisper>
 								<div className='row justify-content-center flex-column'>
+									<table style={{width:"fit-content",margin:"0px auto"}}>
 									{
 										income !== null && Object.keys(income).map((key) => (
-											<div key={key}>{key}:₹{income[key]}</div>
+											<tr key={key}>
+												<td align="left">{key}</td>
+												<td align='right'><span style={{float:"left"}}>:</span>&nbsp;₹{income[key]}</td>
+											</tr>
 										))
 									}
+									</table>
 								</div>
 							</div>
 							<div className='home-tab-1 col-xl-3 col-lg-3 col-md-4 col-sm-4 col-6'>
-								<span className='title'>Wallet</span>
+								<Whisper placement="top" speaker={<Tooltip className="amount-tooltip"><p>{total.wallet}</p></Tooltip>}>      
+									<span className='title'>Wallet</span>
+								</Whisper>
 								<div className='row justify-content-center flex-column'>
+									<table style={{width:"fit-content",margin:"0px auto"}}>
 									{
 										expense !== null && User !== null && Object.keys(expense).map((key) => (
 											User.method.filter((item) => item.name === key).map((item) => (
-												<div key={key}>{key}:₹{item.amount}</div>
-											))
-
+											<tr key={key}>
+												<td align="left">{key}</td>
+												<td align='right'><span style={{float:"left"}}>:</span>&nbsp;₹{item.amount}</td>
+											</tr>
 										))
+									))
 									}
+									</table>
 								</div>
 							</div>
 						</div>
@@ -467,7 +515,10 @@ const Home = ({search, loading, onLoading }) => {
 									<th>Type</th>
 									{
 										open!==null ?
+										User.type.filter((item)=>item.name===addExpense.type).length>0 ?
 										<td><SelectPicker className='addexpense_element' value={addExpense.type} onChange={(value) => setAddExpense((prev) => { return { ...prev, type: value,category: User.type.filter((item)=>item.name===value)[0].type!=="Expense"?"None":"" } })} data={User.type.sort((a,b)=>a.type===b.type?a.name>b.name?1:-1:a.type>b.type?-1:1).map((item) => { return { label: item.type !== "Income" ? item.name + " Expense" : item.name, value: item.name } })} onClean={()=>setAddExpense((prev)=>{return {...prev,type:filter.filter((item)=>item._id===open).map((item)=>{return item.type.name})[0]}})} disabledItemValues={User.type.filter((item)=>item.name===addExpense.type)[0].type!=="Income" ?User.type.filter((item)=>item.type==="Income").map((item)=>{return item.name}):User.type.filter((item)=>item.type!=="Income").map((item)=>{return item.name})} /></td>
+										:
+										<td><SelectPicker className='addexpense_element' value={addExpense.type} readOnly data={[{label:addExpense.type,value:addExpense.type}]} /></td>
 										:
 										<td><SelectPicker className='addexpense_element' value={addExpense.type} onChange={(value) => setAddExpense((prev) => { return { ...prev, type: value,category: User.type.filter((item)=>item.name===value)[0].type!=="Expense"?"None":"" } })} data={User.type.sort((a,b)=>a.type===b.type?a.name>b.name?1:-1:a.type>b.type?-1:1).map((item) => { return { label: item.type !== "Income" ? item.name + " Expense" : item.name, value: item.name } })} /></td>
 									}
@@ -485,7 +536,7 @@ const Home = ({search, loading, onLoading }) => {
 						open!==null ? 
 						<>
 						{
-							(filter.filter((item)=>item._id===open)[0].type.type ==="Settlement Expense" || filter.filter((item)=>item._id===open)[0].type.name ==="Credit")&&
+							(filter.filter((item)=>item._id===open)[0].type.type ==="Settlement Expense" || filter.filter((item)=>item._id===open)[0].type.name ==="Credit" || filter.filter((item)=>item._id===open)[0].type.name ==="Paid")&&
 							<Button onClick={()=>handleSettle(open)} appearance='primary'>
 								Settle
 							</Button>
@@ -552,17 +603,17 @@ const Home = ({search, loading, onLoading }) => {
 				</Modal.Header>
 				<Modal.Body>
 					<div className='addexpense'>
+						<div className='navigate'>
+							<button className={view==="settle"?"active":""} onClick={()=>setView("settle")} >Settlement</button>
+							<button className={view==="payment"?"active":""} onClick={()=>setView("payment")} >Payment List</button>
+						</div>
 						{
-							User &&
+							User && view==="settle" &&
 
 							<table>
 								<tr>
-									<th>Item</th>
-									<td><Input className='addexpense_element' value={settle.item} readOnly={true} /></td>
-								</tr>
-								<tr>
-									<th>Amount</th>
-									<td><Input type="number" className='addexpense_element' value={settle.amount} readOnly={true}/></td>
+									<th>Pending Amount</th>
+									<td><Input value={settle.original} readOnly/></td>
 								</tr>
 								<tr>
 									<th>Date</th>
@@ -572,7 +623,20 @@ const Home = ({search, loading, onLoading }) => {
 									<th>Method</th>
 									<td><SelectPicker className='addexpense_element' value={settle.method} onChange={(value) => setSettle((prev) => { return { ...prev, method: value } })} data={User.method.map((item) => { return { label: item.name,value: item.name } })}/></td>
 								</tr>
+								<tr>
+									<th>Amount</th>
+									<td><Input type="number" className='addexpense_element' value={settle.amount} onChange={(value) =>value<=settle.original && value>=0 ? setSettle((prev) => { return { ...prev, amount: value }}):alert("Invalid Amount")} /></td>
+								</tr>
 							</table>
+						}
+						{
+							settle._id && User && view==="payment" && 
+							<DataTable style={{fontSize:"14px",padding:"15px 0px"}}  selectionMode={"single"} size="small" stripedRows value={filter.filter((item)=>item._id===settle._id)[0].payments} showGridlines tableStyle={{ minWidth: '20rem' }}>
+									<Column field='date' header="Date"></Column>
+									<Column field="method.name" header="Method"></Column>
+									<Column field="amount" header="Amount"></Column>
+									<Column field='_id' header="Action" body={buttonView}></Column>
+							</DataTable>
 						}
 					</div>
 				</Modal.Body>

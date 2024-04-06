@@ -35,13 +35,10 @@ const Signup = () => {
 				<br />
 
 				<div className='signup-container row justify-content-start'>
-					<table className='col-10 singup-table'>
+					<table className='col-12 singup-table'>
 						{
 							step === 0 &&
 							<>
-								<tr>
-									<td colSpan={2}>General Details</td>
-								</tr>
 								<tr>
 									<td>
 										<span className='label'>First Name : </span><br />
