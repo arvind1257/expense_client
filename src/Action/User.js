@@ -6,7 +6,7 @@ import { getCustomAmounts } from "./Amount";
 export const logIn = (authData, navigate, onLoading) => async (dispatch) => {
     try {
         const { data } = await axios.post(
-            "https://aware-gray-caridea.cyclic.app/user/login",
+            "https://expense-server-oc1v.onrender.com/user/login",
             authData
         );
         // const { data } = await axios.post(
