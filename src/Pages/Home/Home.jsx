@@ -373,6 +373,9 @@ const Home = ({search, loading, onLoading }) => {
 			setMethodList(Array.from(new Set(data.map((element) => element.method.name))))
 			setTypeList(Array.from(new Set(data.map((element) => element.type.name))))
 			setCategoryList(Array.from(new Set(data.map((element) => element.category))).filter((element)=>element!=="None"))
+			setMethod([])
+			setType([])
+			setCategory([])
 		}
 	}, [User, data])
 

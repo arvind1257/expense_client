@@ -8,7 +8,6 @@ import Home from './Pages/Home/Home';
 import Report from './Pages/Report/Report';
 import Note from './Pages/Note/Note';
 import Settings from './Pages/Settings/Settings';
-import Amount from "./Pages/Amount/Amount";
 import Login from "./Pages/Login/Login";
 import Signup from "./Pages/Signup/Signup";
 
@@ -45,7 +44,6 @@ function App() {
         <Route path='/Note' element={<Note loading={loading} onLoading={(status) => onLoading(status)} />}></Route>
         <Route path='/Settings' element={<Settings loading={loading} onLoading={(status) => onLoading(status)} />}></Route>
       </Routes>x
-      <Amount />
     </>
   );
 }

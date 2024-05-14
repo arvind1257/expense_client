@@ -25,6 +25,10 @@ const Admin = () => {
         subList[target1].classList.toggle("active")
         subList[target1].parentElement.classList.toggle("showMenu");
     }
+
+    const logout = () =>{
+        localStorage.clear()
+    }
     
     return (
         location.pathname!=="/" && location.pathname!=="/Signup" &&
@@ -83,6 +87,15 @@ const Admin = () => {
                     </Link>
                     <ul className="sub-menu blank">
                         <li><Link to='/Settings' className="link_name">Settings</Link></li>
+                    </ul>
+                </li>
+                <li>
+                    <a onClick={()=>logout()} href="/">
+                        <i className='bx bx-exit'></i>
+                        <span className="link_name">Logout</span>
+                    </a>
+                    <ul className="sub-menu blank">
+                        <li><a onClick={()=>logout()} href='/' className="link_name">Logout</a></li>
                     </ul>
                 </li>
             </ul>
