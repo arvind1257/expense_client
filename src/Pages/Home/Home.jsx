@@ -239,11 +239,14 @@ const Home = ({search, loading, onLoading }) => {
 			temp.method=item.method.name
 			temp.category=item.category
 			temp.type=item.type.name
+			temp.payments = item.payments
 			//temp.update=(User.type.filter((item1)=>item1._id===item.type._id).length>0 && item.payments.length===0)
 			return true;
 		});
-		setAddExpense(temp);
-		setOpen(id);
+		if(temp.type!=="Exchange"){
+			setAddExpense(temp);
+			setOpen(id);
+		}
 	}
 
 	const handleExchange = () =>{
@@ -287,7 +290,7 @@ const Home = ({search, loading, onLoading }) => {
 
 	const exportExcel = () => {
         import('xlsx').then((xlsx) => {
-            const worksheet = xlsx.utils.json_to_sheet(filter.map((item)=>{return {date:item.date,note:item.note,type:item.type,method:item.method.name,category:item.category,amount:parseInt(item.amount.amount)}}));
+            const worksheet = xlsx.utils.json_to_sheet(filter.map((item)=>{return {date:item.date,note:item.note,type:item.type.name,method:item.method.name,category:item.category,amount:parseInt(item.amount.amount)}}));
             const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
             const excelBuffer = xlsx.write(workbook, {
                 bookType: 'xlsx',
@@ -370,9 +373,9 @@ const Home = ({search, loading, onLoading }) => {
 
 	useEffect(() => {
 		if (User && data ) {
-			setMethodList(Array.from(new Set(data.map((element) => element.method.name))))
-			setTypeList(Array.from(new Set(data.map((element) => element.type.name))))
-			setCategoryList(Array.from(new Set(data.map((element) => element.category))).filter((element)=>element!=="None"))
+			setMethodList(Array.from(new Set(data.map((element) => element.method.name))).sort())
+			setTypeList(Array.from(new Set(data.map((element) => element.type.name))).sort())
+			setCategoryList(Array.from(new Set(data.map((element) => element.category))).filter((element)=>element!=="None").sort())
 			setMethod([])
 			setType([])
 			setCategory([])
@@ -544,12 +547,18 @@ const Home = ({search, loading, onLoading }) => {
 								Settle
 							</Button>
 						}
-						<Button onClick={()=>handleEdit(open)} color="green" appearance="primary">
-							Update
-						</Button>
-						<Button onClick={()=>handleDelete(open)} color="red" appearance="primary">
-							Delete
-						</Button>
+						{
+							addExpense.payments.length === 0 && 
+							<>
+							<Button onClick={()=>handleEdit(open)} color="green" appearance="primary">
+								Update
+							</Button>
+							<Button onClick={()=>handleDelete(open)} color="red" appearance="primary">
+								Delete
+							</Button>
+							</>
+						}
+						
 						</> : 
 						<>
 						<Button onClick={()=>handleAdd()} color="green" appearance="primary">

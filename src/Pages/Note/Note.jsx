@@ -51,7 +51,7 @@ const Note = ({ loading, onLoading }) => {
 					</div>
 					<div className='note-container-2'>
 						<p className='title'>Your Saved Notes :</p>
-						{User && User.message.map((item) => (
+						{User && User.message.sort((a, b) => new Date(b.postedOn).getTime() - new Date(a.postedOn).getTime()).map((item) => (
 							<>
 								<div class="arrow-left"></div>
 								<div className='message'>
